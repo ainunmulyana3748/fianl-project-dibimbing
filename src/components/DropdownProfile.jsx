@@ -1,35 +1,57 @@
-import axios from "axios";
-import { AArrowDown } from "lucide-react";
-import { useEffect } from "react";
+import { ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import UserMenuDropdown from "./UserMenuDropdown";
+import { useGetDataUser } from "../hooks/useGetDataUser";
 
 const DropdownProfile = () => {
-  const getUserProfile = async () => {
-    const Authorization =
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1pZnRhaGZhcmhhbkBnbWFpbC5jb20iLCJ1c2VySWQiOiI5NWE4MDNjMy1iNTFlLTQ3YTAtOTBkYi0yYzJmM2Y0ODE1YTkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjI4NDgzODl9.Yblw19ySKtguk-25Iw_4kBKPfqcNqKWx9gjf505DIAk";
+  const [userMenu, setUserMenu] = useState(false);
+  const dropdownRef = useRef(null);
+  const { dataProfile } = useGetDataUser();
 
-    const apiKey = "24405e01-fbc1-45a5-9f5a-be13afcd757c";
-
-    try {
-      const response = await axios.get(
-        "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/user",
-        {
-          headers: {
-            Authorization: Authorization,
-            apiKey: apiKey,
-          },
-        }
-      );
-
-      console.log(response);
-    } catch (error) {}
-  };
-
+  // Close dropdown when clicking outside
   useEffect(() => {
-    getUserProfile();
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setUserMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
+
   return (
-    <div className="text-white bg-orange-400 px-4 py-2 rounded-full">
-      <AArrowDown />
+    <div className="relative" ref={dropdownRef}>
+      {dataProfile && (
+        <div
+          className="flex items-center gap-3 bg-gradient-to-r bg-orange-600 px-4 py-2 rounded-full cursor-pointer transition-all hover:from-obge-700 hover shadow-lg"
+          onClick={() => setUserMenu(!userMenu)}
+        >
+          <div className="relative">
+            <img
+              src={dataProfile.profilePictureUrl}
+              alt="Profile"
+              className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md"
+            />
+            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+          </div>
+
+          <div className="text-white text-sm font-semibold hidden md:block">
+            {dataProfile.name}
+          </div>
+
+          <ChevronDown
+            className={`text-white transition-transform duration-300 ${
+              userMenu ? "rotate-180" : ""
+            }`}
+            size={20}
+          />
+        </div>
+      )}
+
+      {userMenu && <UserMenuDropdown data={dataProfile} />}
     </div>
   );
 };
