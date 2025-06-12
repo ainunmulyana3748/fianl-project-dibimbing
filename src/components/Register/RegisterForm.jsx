@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, Phone, Eye, EyeOff, User } from "lucide-react";
 import { usePasswordVisibility } from "../../context/PasswordVisibilityContext";
-import { useAuthRegister } from "../../hooks/useAuthRegister";
+import { useAuthRegister } from "@/hooks/AuthLoginRegister/useAuthRegister";
 
 import AOS from "aos";
 import "aos/dist/aos.css";

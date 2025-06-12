@@ -3,13 +3,24 @@ import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import useGetDataCategories from "../hooks/useGetDataCategories";
+import { ArrowRight } from "lucide-react";
+import useGetDataActivities from "@/hooks/Activities/useGetDataActivities";
+import { Link } from "react-router-dom";
 
-// Komponen CarouselCategories yang diperbarui dengan penanganan error gambar
-export const CarouselCategories = () => {
-  const { dataCategories } = useGetDataCategories();
+// Komponen CarouselActivities yang diperbarui dengan penanganan error gambar
+export const CarouselActivities = () => {
+  const { dataActivities } = useGetDataActivities();
+  const fallbackImage =
+    "https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_829/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/d4mucgi6ur1vcx57u0jb/TiketOceanParkHongKong.jpg";
 
+  const handleImageError = (e) => {
+    e.currentTarget.src = fallbackImage;
+  };
+
+  const isValidImageUrl = (url) => {
+    if (!url) return false;
+    return url.startsWith("http://") || url.startsWith("https://");
+  };
   return (
     <div className="w-full py-8">
       <Swiper
@@ -27,13 +38,6 @@ export const CarouselCategories = () => {
             slidesPerView: 4,
           },
         }}
-        pagination={{
-          clickable: true,
-          dynamicBullets: true,
-          renderBullet: (index, className) => {
-            return `<span class="${className} bg-orange-400 hover:bg-orange-500 transition-all duration-300"></span>`;
-          },
-        }}
         navigation={{
           nextEl: ".swiper-button-next",
           prevEl: ".swiper-button-prev",
@@ -42,11 +46,10 @@ export const CarouselCategories = () => {
           delay: 5000,
           disableOnInteraction: false,
         }}
-        // loop={true}
         className="relative"
       >
-        {dataCategories.map((category, index) => (
-          <SwiperSlide key={category.id}>
+        {dataActivities.map((activities, index) => (
+          <SwiperSlide key={activities.id}>
             <div className="relative group overflow-hidden rounded-2xl shadow-xl transform transition-all duration-500 hover:scale-105">
               <div className="relative h-80">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 rounded-2xl"></div>
@@ -54,17 +57,22 @@ export const CarouselCategories = () => {
                   {index + 1}
                 </div>
                 <img
-                  src={category.imageUrl}
-                  alt={category.name}
+                  src={activities.imageUrls || fallbackImage}
+                  alt={activities.title || "Activities Image"}
                   className="w-full h-full object-cover rounded-2xl group-hover:scale-110 transition-transform duration-700"
+                  onError={(e) => handleImageError(e)}
                 />
+
                 <div className="absolute bottom-0 left-0 right-0 z-20 p-6">
                   <h3 className="text-2xl font-bold text-white mb-3">
-                    {category.name}
+                    {activities.title}
                   </h3>
-                  <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-1 px-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 inline-flex items-center gap-3">
-                    Explore Categoriy <ArrowRight />
-                  </button>
+                  <Link
+                    to={`/activity/${activities.id}`}
+                    className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-1 px-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 inline-flex items-center gap-3"
+                  >
+                    Explore Activities <ArrowRight />
+                  </Link>
                 </div>
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-orange-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>

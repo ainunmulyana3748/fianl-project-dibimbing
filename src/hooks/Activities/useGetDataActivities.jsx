@@ -1,21 +1,21 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const useGetDataCategories = () => {
-  const [dataCategories, setDataCategories] = useState([]);
+const useGetDataActivities = () => {
+  const [dataActivities, setDataActivities] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const getDataCategories = async () => {
+  const getDataActivities = async () => {
     const apiKey = "24405e01-fbc1-45a5-9f5a-be13afcd757c";
 
     try {
       const response = await axios.get(
-        "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/categories",
+        "https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/activities",
         {
           headers: { apiKey: apiKey },
         }
       );
-      setDataCategories(response.data.data);
+      setDataActivities(response.data.data);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -24,14 +24,14 @@ const useGetDataCategories = () => {
   };
 
   useEffect(() => {
-    getDataCategories();
-  });
+    getDataActivities();
+  }, []);
 
   return {
-    getDataCategories,
-    dataCategories,
+    getDataActivities,
+    dataActivities,
     loading,
   };
 };
 
-export default useGetDataCategories;
+export default useGetDataActivities;

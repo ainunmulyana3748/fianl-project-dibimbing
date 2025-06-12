@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
-import CarouselBanners from "../CarouselBanners";
 import { ArrowRight } from "lucide-react";
-import useGetDataBanners from "../../hooks/useGetDataBanners";
+import { Link } from "react-router-dom";
+import useGetDataBanners from "@/hooks/Banners/useGetDataBanners";
+import CarouselBanners from "../BannerFeature/CarouselBanners";
 
 const SecondSection = () => {
   const { loading, getDataBanners } = useGetDataBanners();
 
   useEffect(() => {
-    getDataBanners(); // 🟢 Tambahkan ini agar data di-fetch saat komponen mount
+    getDataBanners();
   }, []);
   return (
     <div className="w-full">
@@ -37,10 +38,13 @@ const SecondSection = () => {
           <CarouselBanners />
         )}
         <div className="mt-8 text-center">
-          <button className=" bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 inline-flex items-center gap-2">
+          <Link
+            to={"/banners"}
+            className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 inline-flex items-center gap-2"
+          >
             <span>View All Banners</span>
             <ArrowRight size={20} />
-          </button>
+          </Link>
         </div>
       </div>
     </div>

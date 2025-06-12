@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import {
   Menu,
   X,
@@ -20,6 +20,10 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const token = localStorage.getItem("token");
   const location = useLocation();
+  const pathname = location.pathname;
+
+  const isPathMatch = (basePath) =>
+    pathname === basePath || pathname.startsWith(`${basePath}/`);
 
   // Add scroll effect to navbar
   useEffect(() => {
@@ -38,7 +42,7 @@ const Navbar = () => {
   return (
     <div
       className={`fixed w-full z-50 transition-all duration-300 ${
-        scrolled ? " bg-white/90 shadow-md py-1" : "bg-white py-2"
+        scrolled ? " bg-white/90 shadow-md py-2" : "bg-white py-2"
       }`}
     >
       <div className="flex items-center justify-between container px-4 mx-auto">
@@ -55,23 +59,42 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <nav className="hidden lg:block">
           <ul className="flex items-center gap-8 text-md font-medium">
-            <NavItem path="/" label="Home" icon={<Home size={18} />} />
+            <NavItem
+              path="/"
+              label="Home"
+              icon={<Home size={18} />}
+              isActive={pathname === "/"}
+            />
             <NavItem
               path="/banners"
               label="Banners"
               icon={<Image size={18} />}
+              isActive={
+                isPathMatch("/banners") || pathname.startsWith("/banner/")
+              }
             />
             <NavItem
               path="/categories"
               label="Categories"
               icon={<LayoutGrid size={18} />}
+              isActive={
+                isPathMatch("/categories") || pathname.startsWith("/category/")
+              }
             />
             <NavItem
               path="/activities"
               label="Activities"
               icon={<Activity size={18} />}
+              isActive={
+                isPathMatch("/activities") || pathname.startsWith("/activity/")
+              }
             />
-            <NavItem path="/promos" label="Promos" icon={<Tag size={18} />} />
+            <NavItem
+              path="/promos"
+              label="Promos"
+              icon={<Tag size={18} />}
+              isActive={isPathMatch("/promos")}
+            />
           </ul>
         </nav>
 
@@ -82,7 +105,7 @@ const Navbar = () => {
               <DropdownProfile />
             ) : (
               <button
-                className="bg-gradient-to-r from-orange-600 to-indigo-700 hover:from-orange-700 hover:to-indigo-800 px-5 py-2 rounded-full text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-orange-500/20"
+                className="bg-gradient-to-r bg-orange-500 hover:to-indigo-800 px-5 py-2 rounded-full text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-orange-500/20"
                 onClick={() => navigate("/login")}
               >
                 Login
@@ -109,7 +132,7 @@ const Navbar = () => {
 
       {/* Mobile Navigation Sidebar */}
       <div
-        className={`fixed top-0 right-0 w-80 h-full bg-gradient-to-b from-orange-800 to-indigo-900 z-50 transition-all duration-500 ease-in-out shadow-2xl
+        className={`fixed top-0 right-0 w-80 h-full bg-orange-500 z-50 transition-all duration-500 ease-in-out shadow-2xl
         ${nav ? "translate-x-0" : "translate-x-full"}
         lg:hidden`}
       >
@@ -134,26 +157,42 @@ const Navbar = () => {
           {/* Mobile Menu Items */}
           <nav className="flex-1">
             <ul className="flex flex-col gap-1">
-              <MobileNavItem path="/" label="Home" icon={<Home size={20} />} />
+              <MobileNavItem
+                path="/"
+                label="Home"
+                icon={<Home size={20} />}
+                isActive={pathname === "/"}
+              />
               <MobileNavItem
                 path="/banners"
                 label="Banners"
                 icon={<Image size={20} />}
+                isActive={
+                  isPathMatch("/banners") || pathname.startsWith("/banner/")
+                }
               />
               <MobileNavItem
                 path="/categories"
                 label="Categories"
                 icon={<LayoutGrid size={20} />}
+                isActive={
+                  isPathMatch("/categories") ||
+                  pathname.startsWith("/category/")
+                }
               />
               <MobileNavItem
                 path="/activities"
                 label="Activities"
                 icon={<Activity size={20} />}
+                isActive={
+                  isPathMatch("/activities") || pathname.startsWith("/activity")
+                }
               />
               <MobileNavItem
                 path="/promos"
                 label="Promos"
                 icon={<Tag size={20} />}
+                isActive={isPathMatch("/promos")}
               />
 
               <div className="mt-8 pt-6 border-t border-white/20">
@@ -161,11 +200,13 @@ const Navbar = () => {
                   path="/settings"
                   label="Settings"
                   icon={<Settings size={20} />}
+                  isActive={isPathMatch("/settings")}
                 />
                 <MobileNavItem
                   path="/help"
                   label="Help Center"
                   icon={<HelpCircle size={20} />}
+                  isActive={isPathMatch("/help")}
                 />
               </div>
             </ul>
@@ -185,14 +226,11 @@ const Navbar = () => {
 export default Navbar;
 
 // NavItem Component
-const NavItem = ({ path, label, icon }) => {
-  const location = useLocation();
-  const isActive = location.pathname === path;
-
+const NavItem = ({ path, label, icon, isActive }) => {
   return (
-    <li className={`group relative`}>
-      <a
-        href={path}
+    <li className="group relative">
+      <Link
+        to={path}
         className={`flex items-center gap-1.5 py-2 transition-colors ${
           isActive ? "text-orange-600" : "text-gray-600 hover:text-orange-500"
         }`}
@@ -207,7 +245,7 @@ const NavItem = ({ path, label, icon }) => {
           {icon}
         </span>
         {label}
-      </a>
+      </Link>
       <div
         className={`absolute bottom-0 left-0 h-0.5 bg-orange-600 transition-all duration-300 ${
           isActive ? "w-full" : "w-0 group-hover:w-full"
@@ -218,14 +256,11 @@ const NavItem = ({ path, label, icon }) => {
 };
 
 // MobileNavItem Component
-const MobileNavItem = ({ path, label, icon }) => {
-  const location = useLocation();
-  const isActive = location.pathname === path;
-
+const MobileNavItem = ({ path, label, icon, isActive }) => {
   return (
     <li>
-      <a
-        href={path}
+      <Link
+        to={path}
         className={`flex items-center gap-4 py-3 px-4 rounded-lg transition-all ${
           isActive
             ? "bg-white/10 text-white"
@@ -236,7 +271,7 @@ const MobileNavItem = ({ path, label, icon }) => {
           {icon}
         </span>
         <span className="font-medium">{label}</span>
-      </a>
+      </Link>
     </li>
   );
 };

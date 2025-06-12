@@ -7,17 +7,19 @@ import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { ArrowRight, ArrowLeft, Star } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import useGetDataBanners from "../hooks/useGetDataBanners";
+import { Link } from "react-router-dom";
+import useGetDataBanners from "@/hooks/Banners/useGetDataBanners";
 
 const CarouselBanners = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const navigationPrevRef = useRef(null);
   const navigationNextRef = useRef(null);
-  const { getDataBanners, dataBanners } = useGetDataBanners();
+  const { dataBanners } = useGetDataBanners();
+  const fallbackImage =
+    "https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_829/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/d4mucgi6ur1vcx57u0jb/TiketOceanParkHongKong.jpg";
 
   useEffect(() => {
     AOS.init({ duration: 700 });
-    getDataBanners();
   }, []);
 
   return (
@@ -28,11 +30,6 @@ const CarouselBanners = () => {
         autoplay={{
           delay: 3500,
           disableOnInteraction: false,
-        }}
-        pagination={{
-          clickable: true,
-          bulletClass: "swiper-pagination-bullet",
-          bulletActiveClass: "swiper-pagination-bullet-active",
         }}
         navigation={{
           prevEl: navigationPrevRef.current,
@@ -53,23 +50,22 @@ const CarouselBanners = () => {
             key={banner.id}
             className="relative w-full h-full overflow-hidden rounded-2xl"
           >
-            {/* Background blur effect */}
             <div
               className="absolute inset-0 bg-cover bg-center filter blur-lg scale-110 opacity-80"
               style={{ backgroundImage: `url(${banner.imageUrl})` }}
             ></div>
 
-            {/* Main image */}
             <img
-              src={banner.imageUrl}
-              alt={banner.name}
+              src={banner.imageUrl || fallbackImage}
+              alt={banner.name || "Banner Image"}
               className="relative w-full h-full object-cover rounded-2xl transition-transform duration-700 ease-in-out"
+              onError={(e) => {
+                e.currentTarget.src = fallbackImage;
+              }}
             />
 
-            {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent rounded-2xl"></div>
 
-            {/* Content with dynamic animation */}
             <div
               key={
                 activeIndex === index ? `active-${index}` : `inactive-${index}`
@@ -81,10 +77,10 @@ const CarouselBanners = () => {
                 Featured
               </span>
 
-              <h2 className="text-4xl font-bold mb-3">{banner.name}</h2>
-              <p className="mb-4 text-lg">
-                {banner.description || "Discover an amazing experience!"}
-              </p>
+              <h2 className="text-4xl font-bold mb-3">
+                {banner.name || "Banner"}
+              </h2>
+              <p className="mb-4 text-lg">Discover an amazing experience!</p>
 
               <p className="text-2xl font-bold flex items-center gap-2">
                 Rp {banner.price?.toLocaleString("id-ID") || "999.000"}
@@ -95,16 +91,23 @@ const CarouselBanners = () => {
                 )}
               </p>
 
-              <button className="mt-5 px-8 py-3 bg-orange-500 hover:bg-orange-600 rounded-full text-white font-semibold transition-all transform hover:scale-105 shadow flex items-center gap-2">
-                Explore Now
-                <ArrowRight className="w-5 h-5" />
+              <button
+                to={"/banners"}
+                className="mt-5 px-8 py-3 bg-orange-500 hover:bg-orange-600 rounded-full text-white font-semibold transition-all transform hover:scale-105 shadow"
+              >
+                <Link
+                  to={`/banner/${banner.id}`}
+                  className="flex items-center gap-2"
+                >
+                  Explore Now
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
               </button>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
 
-      {/* Custom Navigation Arrows - Orange Theme */}
       <div
         ref={navigationPrevRef}
         className="absolute left-4 top-1/2 z-10 -translate-y-1/2 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300"

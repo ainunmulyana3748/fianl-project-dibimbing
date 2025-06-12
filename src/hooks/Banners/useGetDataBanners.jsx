@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const useGetDataBanners = () => {
   const [dataBanners, setDataBanners] = useState([]);
@@ -22,6 +22,10 @@ const useGetDataBanners = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    getDataBanners();
+  }, []);
 
   return {
     getDataBanners,

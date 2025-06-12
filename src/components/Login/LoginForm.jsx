@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { useAuthLogin } from "../../hooks/useAuthLogin";
 import { usePasswordVisibility } from "../../context/PasswordVisibilityContext";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
+import { useAuthLogin } from "@/hooks/AuthLoginRegister/useAuthLogin";
 
 const LoginForm = () => {
   const {

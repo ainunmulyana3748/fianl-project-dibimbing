@@ -1,25 +1,28 @@
-import { CarouselCategories } from "../CategoriesFeature/CarouselCategories";
+import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
-import useGetDataCategories from "@/hooks/Categories/useGetDataCategories";
+import { CarouselPromos } from "../PromosFeature/CarouselPromos";
 
-const ThirdSection = () => {
-  const { loading } = useGetDataCategories();
+const FifthSection = () => {
+  const [loading, getDataPromos] = useState(true);
 
+  useEffect(() => {
+    getDataPromos();
+  });
   return (
-    <section className="w-full py-16 bg-gradient-to-b from-gray-50 to-gray-100">
+    <section className="w-full py-16 mx-auto">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <div className="inline-block relative">
             <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl text-gray-800 mb-4 relative z-10">
-              Explore <span className="text-orange-500">Travel Categories</span>
+              Explore{" "}
+              <span className="text-orange-500">Promos & Discounts</span>
             </h1>
             <div className="absolute -bottom-2 left-0 w-full h-3 bg-orange-400/30 rounded-full z-0"></div>
           </div>
 
           <p className="max-w-2xl mx-auto mt-6 text-gray-600 text-lg leading-relaxed">
-            Discover diverse experiences and activities organized by category to
-            help you find your perfect adventure
+            Exclusive discounts and package deals to make your Indonesian
+            adventure even more affordable
           </p>
 
           <div className="mt-8 flex justify-center">
@@ -32,21 +35,18 @@ const ThirdSection = () => {
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500"></div>
           </div>
         ) : (
-          <CarouselCategories />
+          <CarouselPromos />
         )}
 
         <div className="mt-8 text-center">
-          <Link
-            to={"/categories"}
-            className=" bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 inline-flex items-center gap-2"
-          >
-            <span>View All Categories</span>
+          <button className=" bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 inline-flex items-center gap-2">
+            <span>View All Promos</span>
             <ArrowRight size={20} />
-          </Link>
+          </button>
         </div>
       </div>
     </section>
   );
 };
 
-export default ThirdSection;
+export default FifthSection;
