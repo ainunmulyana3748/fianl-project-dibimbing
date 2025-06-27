@@ -31,6 +31,7 @@ const useGetDataCategories = () => {
     getDataCategories,
     dataCategories,
     loading,
+    refetch: getDataCategories,
   };
 };
 

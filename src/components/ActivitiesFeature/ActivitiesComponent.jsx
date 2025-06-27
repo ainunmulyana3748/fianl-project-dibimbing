@@ -10,8 +10,11 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import ActivitiesNotFound from "./ActivitiesNotFound";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useGetDataActivities from "@/hooks/Activities/useGetDataActivities";
+import useAddCart from "@/hooks/Cart/useAddCart";
+import { useCart } from "@/context/CartContext";
+import { toast } from "sonner";
 
 const ActivitiesComponent = () => {
   const { dataActivities, loading } = useGetDataActivities();
@@ -129,9 +132,35 @@ export default ActivitiesComponent;
 export const CardActivities = ({ activities }) => {
   const fallbackImage =
     "https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_829/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/d4mucgi6ur1vcx57u0jb/TiketOceanParkHongKong.jpg";
+  const { addCart } = useAddCart();
+  const { refetchCart } = useCart();
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   const handleImageError = (e) => {
     e.currentTarget.src = fallbackImage;
+  };
+
+  const handleAddtoCart = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!token) {
+      toast.info("Login terlebih dahulu");
+      setTimeout(() => {
+        navigate("/login");
+      }, 100);
+      return;
+    }
+
+    try {
+      await addCart(activities.id);
+      await refetchCart();
+      toast.success("Berhasil ditambahkan ke keranjang!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Gagal menambahkan ke keranjang.");
+    }
   };
 
   if (!activities) {
@@ -184,10 +213,13 @@ export const CardActivities = ({ activities }) => {
           <span className="text-orange-600 font-bold text-base">
             Rp {activities.price?.toLocaleString("id-ID") || "0"}
           </span>
-          <button className="flex items-center gap-1 bg-orange-50 hover:bg-orange-100 text-orange-600 px-3 py-1.5 rounded-full text-sm font-medium shadow-sm">
+          <Button
+            className="flex items-center gap-1 bg-orange-50 hover:bg-orange-100 text-orange-600 px-3 py-1.5 rounded-full text-sm font-medium shadow-sm"
+            onClick={handleAddtoCart}
+          >
             <ShoppingCart className="w-4 h-4" />
             Add
-          </button>
+          </Button>
         </div>
       </div>
     </Link>

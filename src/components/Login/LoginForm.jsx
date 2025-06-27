@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { usePasswordVisibility } from "../../context/PasswordVisibilityContext";
 
@@ -20,7 +20,6 @@ const LoginForm = () => {
   } = useAuthLogin();
 
   const { showPassword, togglePasswordVisibility } = usePasswordVisibility();
-  const navigate = useNavigate();
 
   useEffect(() => {
     AOS.init({
@@ -106,12 +105,9 @@ const LoginForm = () => {
         data-aos-delay="800"
       >
         Don't have an account?{" "}
-        <button
-          className="text-orange-500 hover:underline"
-          onClick={() => navigate("/register")}
-        >
+        <Link to={"/register"} className="text-orange-500 hover:underline">
           Register
-        </button>
+        </Link>
       </p>
     </div>
   );

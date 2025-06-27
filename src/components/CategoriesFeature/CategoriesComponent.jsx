@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import useGetDataCategories from "@/hooks/Categories/useGetDataCategories";
 
 const CategoriesComponent = () => {
-  const { dataCategories } = useGetDataCategories();
+  const { dataCategories, loading } = useGetDataCategories();
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -14,9 +14,16 @@ const CategoriesComponent = () => {
 
   // Filter data berdasarkan search
   useEffect(() => {
+    if (!dataCategories) {
+      setSearchResult([]);
+      return;
+    }
+
     if (search !== "") {
       const result = dataCategories.filter((categories) =>
-        categories.name.toLowerCase().includes(search.toLowerCase().trim())
+        (categories?.name || "")
+          .toLowerCase()
+          .includes(search.toLowerCase().trim())
       );
       setSearchResult(result);
       setCurrentPage(1);
@@ -43,6 +50,14 @@ const CategoriesComponent = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto min-h-screen flex items-center justify-center">
+        <div className="text-2xl text-gray-600">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto flex flex-col gap-8 py-8">
@@ -107,16 +122,20 @@ export const CardCategories = ({ categories }) => {
   const fallbackImage =
     "https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_829/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/d4mucgi6ur1vcx57u0jb/TiketOceanParkHongKong.jpg";
 
+  if (!categories) {
+    return null;
+  }
+
   return (
-    <Link to={`/category/${categories.id}`}>
+    <Link to={`/category/${categories?.id}`}>
       <div className="group rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white cursor-pointer transform hover:-translate-y-1">
         <div className="overflow-hidden aspect-video">
           <img
-            src={categories.imageUrl}
-            onError={(e) => (e.currentTarget.src = fallbackImage)}
-            alt={categories.name || "Categories Image"}
+            src={categories?.imageUrl || fallbackImage}
+            alt={categories?.name || "Categories Image"}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
+            onError={(e) => (e.currentTarget.src = fallbackImage)}
           />
         </div>
 

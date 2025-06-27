@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Phone, Eye, EyeOff, User } from "lucide-react";
 import { usePasswordVisibility } from "../../context/PasswordVisibilityContext";
 import { useAuthRegister } from "@/hooks/AuthLoginRegister/useAuthRegister";
@@ -220,12 +220,9 @@ const RegisterForm = () => {
 
       <p className="text-sm text-center mt-4 text-gray-600">
         You have an account ?{" "}
-        <button
-          className="text-orange-500 hover:underline"
-          onClick={() => navigate("/Login")}
-        >
+        <Link to={"/login"} className="text-orange-500 hover:underline">
           Login
-        </button>
+        </Link>
       </p>
     </div>
   );

@@ -31,6 +31,7 @@ const useGetDataBanners = () => {
     getDataBanners,
     dataBanners,
     loading,
+    refetch: getDataBanners,
   };
 };
 

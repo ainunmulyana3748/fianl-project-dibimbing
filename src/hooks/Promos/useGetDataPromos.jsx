@@ -31,6 +31,7 @@ const useGetDataPromos = () => {
     getDataPromos,
     dataPromos,
     loading,
+    refetch: getDataPromos,
   };
 };
 

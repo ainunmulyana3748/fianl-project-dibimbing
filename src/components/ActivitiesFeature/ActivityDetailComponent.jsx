@@ -6,13 +6,16 @@ import {
   MapPin,
   Star,
   StarHalf,
-  Compass,
   BadgeDollarSign,
   Landmark,
   Heart,
   Share2,
+  ShoppingCart,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import useAddCart from "@/hooks/Cart/useAddCart";
+import { useCart } from "@/context/CartContext";
+import { toast } from "sonner";
 
 const fallbackImage =
   "https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_829/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/d4mucgi6ur1vcx57u0jb/TiketOceanParkHongKong.jpg";
@@ -123,6 +126,8 @@ const ReviewItem = ({ review }) => {
 };
 
 const ActivityDetailComponent = () => {
+  const { addCart } = useAddCart();
+  const { refetchCart } = useCart();
   const navigate = useNavigate();
   const { dataActivities, loading } = useGetActivityDetail();
   const [isFavorite, setIsFavorite] = useState(false);
@@ -132,6 +137,18 @@ const ActivityDetailComponent = () => {
     rating: 5,
     comment: "",
   });
+
+  const handleAddToCart = async (id) => {
+    try {
+      await addCart(id);
+      await refetchCart();
+      toast.success("Berhasil ditambahkan ke keranjang!");
+      navigate("/carts");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Gagal menambahkan ke keranjang");
+    }
+  };
 
   if (loading) {
     return (
@@ -257,9 +274,12 @@ const ActivityDetailComponent = () => {
                 </div>
 
                 <div className="flex gap-3">
-                  <button className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-full transition text-sm font-medium shadow-md">
-                    <Compass className="w-4 h-4" />
-                    Book Now
+                  <button
+                    onClick={() => handleAddToCart(dataActivities.id)}
+                    className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-full transition text-sm font-medium shadow-md"
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    Add to Cart
                   </button>
 
                   <button className="flex items-center gap-2 border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2.5 rounded-full transition text-sm font-medium">
@@ -308,7 +328,7 @@ const ActivityDetailComponent = () => {
             )}
 
             {/* Google Maps */}
-            {dataActivities?.location_maps && (
+            {dataActivities?.location_maps?.includes("<iframe") && (
               <div className="mt-8">
                 <h3 className="text-xl font-bold text-gray-800 mb-3 pb-2 border-b border-gray-200">
                   Location

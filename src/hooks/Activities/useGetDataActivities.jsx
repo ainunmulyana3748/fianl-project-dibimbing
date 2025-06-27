@@ -31,6 +31,7 @@ const useGetDataActivities = () => {
     getDataActivities,
     dataActivities,
     loading,
+    refetch: getDataActivities,
   };
 };
 

@@ -82,15 +82,6 @@ const CarouselBanners = () => {
               </h2>
               <p className="mb-4 text-lg">Discover an amazing experience!</p>
 
-              <p className="text-2xl font-bold flex items-center gap-2">
-                Rp {banner.price?.toLocaleString("id-ID") || "999.000"}
-                {banner.price && (
-                  <span className="text-sm line-through text-gray-300 font-normal ml-2">
-                    Rp {(banner.price * 1.3).toLocaleString("id-ID")}
-                  </span>
-                )}
-              </p>
-
               <button
                 to={"/banners"}
                 className="mt-5 px-8 py-3 bg-orange-500 hover:bg-orange-600 rounded-full text-white font-semibold transition-all transform hover:scale-105 shadow"

@@ -1,7 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import UserMenuDropdown from "./UserMenuDropdown";
-import { useGetDataUser } from "../hooks/useGetDataUser";
+import { useGetDataUser } from "@/hooks/User/useGetDataUser";
 
 const DropdownProfile = () => {
   const [userMenu, setUserMenu] = useState(false);
@@ -22,6 +22,9 @@ const DropdownProfile = () => {
     };
   }, []);
 
+  const fallbackImage =
+    "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740";
+
   return (
     <div className="relative" ref={dropdownRef}>
       {dataProfile && (
@@ -31,9 +34,13 @@ const DropdownProfile = () => {
         >
           <div className="relative">
             <img
-              src={dataProfile.profilePictureUrl}
+              src={dataProfile.profilePictureUrl || fallbackImage}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = fallbackImage;
+              }}
               alt="Profile"
-              className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md"
+              className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
             />
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
           </div>

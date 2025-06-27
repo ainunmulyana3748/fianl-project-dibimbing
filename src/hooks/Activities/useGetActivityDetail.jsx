@@ -6,7 +6,6 @@ const useGetActivityDetail = () => {
   const { id } = useParams();
   const [dataActivities, setDataActivities] = useState(null);
   const [loading, setLoading] = useState(true);
-  const apiKey = "24405e01-fbc1-45a5-9f5a-be13afcd757c";
 
   useEffect(() => {
     const fetchActivityDetail = async () => {
@@ -16,7 +15,8 @@ const useGetActivityDetail = () => {
           `https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/activity/${id}`,
           {
             headers: {
-              apiKey,
+              apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );

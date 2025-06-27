@@ -1,10 +1,18 @@
-import { LogOut, ShoppingCart, User } from "lucide-react";
+import useLogoutUser from "@/hooks/useLogoutUser";
+import {
+  Grid,
+  LayoutDashboard,
+  LogOut,
+  ShoppingCart,
+  User,
+} from "lucide-react";
+import { Link } from "react-router-dom";
 
 const UserMenuDropdown = ({ data }) => {
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+  const { handleLogout } = useLogoutUser();
+  const role = localStorage.getItem("role");
+  const fallbackImage =
+    "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740";
 
   return (
     <div className="absolute top-full right-0 mt-2 w-72 bg-white shadow-2xl rounded-xl overflow-hidden z-50 text-gray-800 animate-fadeIn">
@@ -15,10 +23,15 @@ const UserMenuDropdown = ({ data }) => {
       <div className="p-5 bg-gradient-to-r from-orange-50 to-indigo-50 border-b">
         <div className="flex items-center gap-4">
           <img
-            src={data.profilePictureUrl}
+            src={data.profilePictureUrl || fallbackImage}
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = fallbackImage;
+            }}
             alt="Profile"
             className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm"
           />
+
           <div>
             <p className="font-bold text-lg">{data.name}</p>
             <p className="text-sm text-gray-500">{data.role}</p>
@@ -29,12 +42,23 @@ const UserMenuDropdown = ({ data }) => {
 
       {/* Menu Items */}
       <ul className="py-2">
-        <DropdownItem icon={<User size={18} />} label="My Profile" />
+        <DropdownItem
+          icon={<User size={18} />}
+          label="My Profile"
+          href={"/update-profile"}
+        />
         <DropdownItem
           icon={<ShoppingCart size={18} />}
-          label="My Orders"
-          badge={3}
+          label="My Transaction"
+          href={"/my-transactions"}
         />
+        {role === "admin" ? (
+          <DropdownItem
+            icon={<LayoutDashboard size={18} />}
+            label="My Dashboard"
+            href={"/my-dashboard"}
+          />
+        ) : null}
       </ul>
 
       {/* Footer */}
@@ -53,10 +77,10 @@ const UserMenuDropdown = ({ data }) => {
 
 export default UserMenuDropdown;
 
-const DropdownItem = ({ icon, label, badge }) => (
+const DropdownItem = ({ icon, label, badge, href }) => (
   <li>
-    <a
-      href="#"
+    <Link
+      to={href}
       className="flex items-center justify-between py-3 px-5 text-sm hover:bg-orange-50 transition-colors group"
     >
       <div className="flex items-center gap-3">
@@ -70,6 +94,6 @@ const DropdownItem = ({ icon, label, badge }) => (
           {badge}
         </span>
       )}
-    </a>
+    </Link>
   </li>
 );
