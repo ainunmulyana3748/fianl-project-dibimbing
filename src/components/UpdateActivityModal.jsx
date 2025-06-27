@@ -1,173 +1,134 @@
-// components/UpdateActivityModal.js
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import useUpdateActivity from "@/hooks/Activities/useUpdateActivity";
+import useUploadImage from "@/hooks/useUploadImage";
 
 const UpdateActivityModal = ({
   open,
   onClose,
-  activity,
   onUpdated,
+  activity,
   categories,
 }) => {
-  const { updateActivity } = useUpdateActivity(onUpdated);
-
+  const { updateActivity, loading } = useUpdateActivity();
+  const { uploadImage } = useUploadImage();
   const [form, setForm] = useState({
+    categoryId: "",
     title: "",
     description: "",
     price: "",
     price_discount: "",
     rating: "",
     total_reviews: "",
-    city: "",
+    facilities: "",
+    address: "",
     province: "",
-    imageUrls: "",
-    categoryId: "",
+    city: "",
+    location_maps: "",
   });
+  const [imageUrls, setImageUrls] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (activity) {
+      const {
+        categoryId,
+        title,
+        description,
+        price,
+        price_discount,
+        rating,
+        total_reviews,
+        facilities,
+        address,
+        province,
+        city,
+        location_maps,
+        imageUrls,
+      } = activity;
       setForm({
-        title: activity.title || "",
-        description: activity.description || "",
-        price: activity.price || "",
-        price_discount: activity.price_discount || "",
-        rating: activity.rating || "",
-        total_reviews: activity.total_reviews || "",
-        city: activity.city || "",
-        province: activity.province || "",
-        imageUrls: activity.imageUrls?.join(",") || "",
-        categoryId: activity.categoryId || "",
+        categoryId,
+        title,
+        description,
+        price,
+        price_discount,
+        rating,
+        total_reviews,
+        facilities,
+        address,
+        province,
+        city,
+        location_maps,
       });
+      setImageUrls(imageUrls || []);
     }
   }, [activity]);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    setUploading(true);
+    try {
+      const urls = await Promise.all(files.map((file) => uploadImage(file)));
+      setImageUrls((prev) => [...prev, ...urls]);
+    } catch (err) {
+      console.error("Image upload failed", err);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async () => {
-    const payload = {
-      title,
-      description,
-      imageUrls,
-      price,
-      price_discount,
-      rating,
-      total_reviews,
-      facilities,
-      address,
-      province,
-      city,
-      categoryId,
-      location_maps,
-    };
-
-    await updateActivity(activity.id, payload, () => {
-      onUpdated();
+    try {
+      const payload = {
+        ...form,
+        imageUrls,
+        price: Number(form.price),
+        price_discount: Number(form.price_discount),
+        rating: Number(form.rating),
+        total_reviews: Number(form.total_reviews),
+      };
+      await updateActivity(activity.id, payload);
       onClose();
-    });
+      onUpdated();
+    } catch (error) {
+      console.error("Failed to update activity", error);
+    }
+  };
+
+  const removeImage = (url) => {
+    setImageUrls((prev) => prev.filter((img) => img !== url));
   };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-xl">
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Activity</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <div>
-            <Label>Title</Label>
-            <Input name="title" value={form.title} onChange={handleChange} />
-          </div>
-          <div>
-            <Label>Description</Label>
-            <Textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <Label>Price</Label>
-              <Input
-                name="price"
-                type="number"
-                value={form.price}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="flex-1">
-              <Label>Discount Price</Label>
-              <Input
-                name="price_discount"
-                type="number"
-                value={form.price_discount}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <Label>Rating</Label>
-              <Input
-                name="rating"
-                type="number"
-                value={form.rating}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="flex-1">
-              <Label>Total Reviews</Label>
-              <Input
-                name="total_reviews"
-                type="number"
-                value={form.total_reviews}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <Label>City</Label>
-              <Input name="city" value={form.city} onChange={handleChange} />
-            </div>
-            <div className="flex-1">
-              <Label>Province</Label>
-              <Input
-                name="province"
-                value={form.province}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div>
-            <Label>Image URLs (comma separated)</Label>
-            <Textarea
-              name="imageUrls"
-              value={form.imageUrls}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex gap-5 items-center">
             <Label>Category</Label>
             <select
               name="categoryId"
               value={form.categoryId}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500"
             >
-              <option value="">-- Select Category --</option>
               {categories?.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.name}
@@ -175,14 +136,67 @@ const UpdateActivityModal = ({
               ))}
             </select>
           </div>
-          <div className="flex justify-end mt-4">
-            <Button
-              onClick={handleSubmit}
-              className="bg-orange-500 hover:bg-orange-400"
-            >
-              Update
-            </Button>
+
+          {Object.keys(form).map((key) => {
+            if (key === "categoryId") return null;
+            return (
+              <div key={key} className="col-span-2">
+                <Label className="capitalize">{key.replace(/_/g, " ")}</Label>
+                {key === "description" ||
+                key === "facilities" ||
+                key === "location_maps" ? (
+                  <Textarea
+                    name={key}
+                    value={form[key]}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <Input name={key} value={form[key]} onChange={handleChange} />
+                )}
+              </div>
+            );
+          })}
+
+          <div className="col-span-2">
+            <Label>Upload Images</Label>
+            <Input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageUpload}
+            />
+            {uploading && (
+              <p className="text-sm text-gray-500 mt-1">Uploading...</p>
+            )}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {imageUrls.map((url, idx) => (
+                <div key={idx} className="relative">
+                  <img
+                    src={url}
+                    alt="preview"
+                    className="w-20 h-20 object-cover rounded border"
+                  />
+                  <button
+                    onClick={() => removeImage(url)}
+                    className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+                    title="Remove"
+                    type="button"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
+        </div>
+
+        <div className="flex justify-end gap-2 mt-6">
+          <Button variant="outline" onClick={onClose} disabled={loading}>
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} disabled={loading || uploading}>
+            {loading ? "Saving..." : "Save"}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

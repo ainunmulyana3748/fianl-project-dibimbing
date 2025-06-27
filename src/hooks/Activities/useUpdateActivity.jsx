@@ -1,29 +1,35 @@
 import axios from "axios";
+import { useState } from "react";
 import { toast } from "sonner";
 
 const useUpdateActivity = () => {
-  const updateActivity = async (activityId, payload, onSuccess) => {
+  const [loading, setLoading] = useState(false);
+
+  const updateActivity = async (activityId, payload) => {
+    setLoading(true);
     try {
-      const response = await axios.put(
+      const token = localStorage.getItem("token");
+      await axios.post(
         `https://travel-journal-api-bootcamp.do.dibimbing.id/api/v1/update-activity/${activityId}`,
         payload,
         {
           headers: {
             apiKey: "24405e01-fbc1-45a5-9f5a-be13afcd757c",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      toast.success("Activity updated successfully");
-      if (onSuccess) onSuccess(response.data);
+      toast.success("Update Activity Success");
     } catch (error) {
-      console.error("Update failed:", error);
-      toast.error("Failed to update activity");
+      toast.error("Update Activity Failed");
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
-  return { updateActivity };
+  return { updateActivity, loading };
 };
 
 export default useUpdateActivity;

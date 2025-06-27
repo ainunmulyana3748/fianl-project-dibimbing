@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Bookmark, Clock } from "lucide-react";
 import useGetDataPromos from "@/hooks/Promos/useGetDataPromos";
+import { Link } from "react-router-dom";
 
 // Komponen CarouselPromos yang diperbarui dengan penanganan error gambar
 export const CarouselPromos = () => {
@@ -70,11 +71,14 @@ export const CarouselPromos = () => {
                     variant="outline"
                     className="text-orange-600 border-orange-400 hover:bg-orange-100"
                   >
-                    BELI2
+                    {Promos.promo_code}
                   </Button>
-                  <button className="text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 px-3 py-2 rounded-full inline-flex items-center gap-2">
+                  <Link
+                    to={`/promo/${Promos.id}`}
+                    className="text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 px-3 py-2 rounded-full inline-flex items-center gap-2"
+                  >
                     Get Deal <ArrowRight />
-                  </button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>

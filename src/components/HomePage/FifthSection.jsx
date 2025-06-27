@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { CarouselPromos } from "../PromosFeature/CarouselPromos";
+import { Link } from "react-router-dom";
 
 const FifthSection = () => {
   const [loading, getDataPromos] = useState(true);
@@ -39,10 +40,13 @@ const FifthSection = () => {
         )}
 
         <div className="mt-8 text-center">
-          <button className=" bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 inline-flex items-center gap-2">
+          <Link
+            to={"/promos"}
+            className=" bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 inline-flex items-center gap-2"
+          >
             <span>View All Promos</span>
             <ArrowRight size={20} />
-          </button>
+          </Link>
         </div>
       </div>
     </section>

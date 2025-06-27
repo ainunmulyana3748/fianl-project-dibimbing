@@ -107,7 +107,7 @@ const Activities = () => {
           className="whitespace-nowrap bg-orange-500 hover:bg-orange-400"
           onClick={() => setOpenAddModal(true)}
         >
-          + Add Promo
+          + Add Activities
         </Button>
       </div>
 
