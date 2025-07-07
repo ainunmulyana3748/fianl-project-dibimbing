@@ -6,10 +6,13 @@ import bgImage from "../../assets/HomePage/firstSection/bgImage.jpg";
 
 const FirstSection = () => {
   return (
-    <section
-      className="w-full py-24 bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: `url(${bgImage})` }}
-    >
+    <section className="relative w-full py-24 overflow-hidden">
+      <img
+        src={bgImage}
+        alt="Hero background"
+        fetchPriority="high"
+        className="absolute inset-0 w-full h-full object-cover -z-10"
+      />
       <div className="container px-4 mx-auto flex flex-row justify-between items-center gap-x-12 text-white">
         {/* Header Text */}
         <div className="flex flex-col items-center text-center max-w-2xl mx-auto gap-y-4 xl:text-start xl:w-[55%]">
