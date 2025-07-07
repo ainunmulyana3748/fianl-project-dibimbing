@@ -25,7 +25,9 @@ const AuthLoginLayout = () => {
             data-aos-delay="800"
           >
             <img
-              src={tourist}
+              src={
+                "https://travel-journal-api-bootcamp.do.dibimbing.id/images/1751892682597-tourist.png"
+              }
               alt="Tourist illustration"
               className="w-full h-full object-contain"
             />
