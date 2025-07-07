@@ -20,7 +20,7 @@ const FirstSection = () => {
             <img
               src={iconWorld}
               alt="iconWorld"
-              className="inline-block w-8 xl:w-11 xl:mt-1"
+              className="inline-block w-8 h-8 xl:w-11 xl:h-11 xl:mt-1 object-cover"
             />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold xl:text-6xl">
