@@ -1,10 +1,14 @@
+import firstImage from "../../assets/HomePage/firstSection/firstImage.png";
+import secondImage from "../../assets/HomePage/firstSection/secondImage.png";
+import thirdImage from "../../assets/HomePage/firstSection/thirdImage.png";
+import iconWorld from "../../assets/HomePage/firstSection/iconWorld.png";
+import bgImage from "../../assets/HomePage/firstSection/bgImage.jpg";
+
 const FirstSection = () => {
   return (
     <section
       className="w-full py-24 bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage: `url(${`https://travel-journal-api-bootcamp.do.dibimbing.id/images/1751884905985-bgimage.jpg`})`,
-      }}
+      style={{ backgroundImage: `url(${bgImage})` }}
     >
       <div className="container px-4 mx-auto flex flex-row justify-between items-center gap-x-12 text-white">
         {/* Header Text */}
@@ -14,9 +18,7 @@ const FirstSection = () => {
               Know Before You Go
             </p>
             <img
-              src={
-                "https://travel-journal-api-bootcamp.do.dibimbing.id/images/1751892445325-iconworld.png"
-              }
+              src={iconWorld}
               alt="iconWorld"
               className="inline-block w-8 xl:w-11 xl:mt-1"
             />
@@ -36,23 +38,17 @@ const FirstSection = () => {
         {/* Images */}
         <div className="hidden xl:flex xl:flex-row items-center gap-y-6 sm:gap-y-0 sm:gap-x-6 xl:w-[60%]">
           <img
-            src={
-              "https://travel-journal-api-bootcamp.do.dibimbing.id/images/1751892276248-firstimage.png"
-            }
+            src={firstImage}
             alt="firstImage"
             className="w-48 2xl:w-64 h-auto pb-8"
           />
           <img
-            src={
-              "https://travel-journal-api-bootcamp.do.dibimbing.id/images/1751892348226-secondimage.png"
-            }
+            src={secondImage}
             alt="secondImage"
             className="w-48 2xl:w-64 h-auto pt-16"
           />
           <img
-            src={
-              "https://travel-journal-api-bootcamp.do.dibimbing.id/images/1751892369436-thirdimage.png"
-            }
+            src={thirdImage}
             alt="thirdImage"
             className="w-48 2xl:w-64 h-auto pt-32"
           />
